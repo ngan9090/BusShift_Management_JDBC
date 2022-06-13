@@ -1,7 +1,9 @@
 package Main;
 
 import Database.DriverTable;
+import Database.BusRouteTable;
 import constant.Database;
+import entity.BusRoute;
 import entity.Driver;
 import util.DatabaseConnection;
 
@@ -12,38 +14,18 @@ import java.util.Scanner;
 
 public class MainRun {
     public static List<Driver> DRIVERS;
+    public static List<BusRoute> BUS_ROUTES;
 
     public static void main(String[] args) {
         initData();
         menu();
-
     }
 
     public static void initData(){
-        Connection connection = DatabaseConnection.openConnection(Database.DRIVER_STRING, Database.URL, Database.USERNAME, Database.PASSWORD);
-        //Kiểm tra bảng có tồn tại hay không
-        DatabaseMetaData dbm = null;
-        try {
-            dbm = connection.getMetaData();
-            ResultSet tables = dbm.getTables(null, "SQL4", DriverTable.DRIVER_TABLE_NAME , null);
-            if(!tables.next()) {
-                try {
-                    PreparedStatement pre = connection.prepareStatement("CREATE TABLE SQL4.Driver("
-                            + "Ids number primary key, "
-                            + "Names VARCHAR (20) NOT NULL, "
-                            + "Address VARCHAR (100) NOT NULL, "
-                            + "PhoneNumber VARCHAR (20) NOT NULL, "
-                            + "Levels VARCHAR (20))");
-                    pre.executeQuery();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        DriverTable.createTable();
+        BusRouteTable.createTable();
         DRIVERS = DriverTable.getDrivers();
-
+        BUS_ROUTES = BusRouteTable.getBusRoutes();
     }
 
     private static void menu() {
@@ -57,10 +39,10 @@ public class MainRun {
                     DriverTable.showDriver();
                     break;
                 case 3:
-                    //BusRouteService.createNewBusRoute();
+                    BusRouteTable.createNewBusRoute();
                     break;
                 case 4:
-                    //BusRouteService.showBusRoute();
+                    BusRouteTable.showBusRoute();
                     break;
                 case 5:
                     //DriverManagementService.createDrivingSchedule();

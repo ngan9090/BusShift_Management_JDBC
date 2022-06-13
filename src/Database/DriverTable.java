@@ -29,6 +29,28 @@ public class DriverTable {
     }
 
 
+    public static void createTable(){
+        DatabaseMetaData dbm = null;
+        try {
+            dbm = connection.getMetaData();
+            ResultSet tables = dbm.getTables(null, "SQL4", DriverTable.DRIVER_TABLE_NAME , null);
+            if(!tables.next()) {
+                try {
+                    PreparedStatement pre = connection.prepareStatement("CREATE TABLE SQL4.Driver("
+                            + "Ids number primary key, "
+                            + "Names VARCHAR (20) NOT NULL, "
+                            + "Address VARCHAR (100) NOT NULL, "
+                            + "PhoneNumber VARCHAR (20) NOT NULL, "
+                            + "Levels VARCHAR (20))");
+                    pre.executeQuery();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
     public static List<Driver> getDrivers() {
         List<Driver> drivers = null;
         PreparedStatement preparedStatement = null;
